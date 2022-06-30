@@ -1,0 +1,2 @@
+# SlangWord
+app SlangWord
