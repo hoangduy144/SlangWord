@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -31,7 +33,7 @@ public class SlangForm extends JPanel implements ActionListener {
 	JButton addButton;
 	Dict dict;
 	JButton editButton;
-	JButton resetButton;
+	JButton clearButton;
 	JPanel addForm;
 	JPanel searchForm;
 	JButton searchButton;
@@ -68,16 +70,16 @@ public class SlangForm extends JPanel implements ActionListener {
 		editButton.setBounds(160, 250, 80, 30);
 		editButton.addActionListener(this);
 		
-		resetButton = new JButton("Reset");
-		resetButton.setBounds(260, 250, 80, 30);
-		resetButton.addActionListener(this);
+		clearButton = new JButton("Clear");
+		clearButton.setBounds(260, 250, 80, 30);
+		clearButton.addActionListener(this);
 		addForm.add(slangLabel);
 		addForm.add(slangField);
 		addForm.add(definitionLabel);
 		addForm.add(definitionField);
 		addForm.add(addButton);
 		addForm.add(editButton);
-		addForm.add(resetButton);
+		addForm.add(clearButton);
 		addForm.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		add(addForm, BorderLayout.CENTER);
 		
@@ -132,14 +134,23 @@ public class SlangForm extends JPanel implements ActionListener {
 		historyPane.setPreferredSize(new Dimension(500, 100));
 		historyPanel.add(historyLabel);
 		historyPanel.add(historyPane);
+		LinkedList<String> history = dict.getHistory();
+		for (Iterator iterator = history.iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+			historyArea.append("\n" + string);
+			
+		}
 		add(historyPanel, BorderLayout.SOUTH);
+	}
+	public void clearHistory() {
+		historyArea.setText("");
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == addButton) {
 			String slang = slangField.getText();
 			String definition = definitionField.getText();
-			if(dict.hashSlang(slang)) {
+			if(dict.hasSlang(slang)) {
 				String[] options = {"Add new definition", "Overwrite"};
 				JOptionPane pane = new JOptionPane();
 				int choice = pane.showOptionDialog(null, "This slang has already existed", "Existed slang", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
@@ -150,6 +161,9 @@ public class SlangForm extends JPanel implements ActionListener {
 					System.out.println("else");
 				}
 				
+			}
+			else {
+				dict.AddNew(slang, definition);
 			}
 		}
 		else if (e.getSource() == editButton) {
@@ -162,7 +176,7 @@ public class SlangForm extends JPanel implements ActionListener {
 			}
 		}
 		else if (e.getSource() == deleteButton) {
-			int choice = JOptionPane.showConfirmDialog(deleteButton, "This slang will remove from dictionary");
+			int choice = JOptionPane.showConfirmDialog(deleteButton, "This slang will remove from dictionary", "Delete", JOptionPane.YES_NO_OPTION);
 			if(choice == 0) {
 				dict.deleteSlang(searchSlangField.getText());
 				listModel.removeAllElements();
@@ -180,16 +194,18 @@ public class SlangForm extends JPanel implements ActionListener {
 				SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
 				Date date = new Date();  
 				String time = formatter.format(date).toString();
-				historyArea.append("\n" + time + " |   " + searchSlangField.getText());
+				String history = time + " |   " + searchSlangField.getText();
+				dict.AddHistory(history);
+				historyArea.append("\n" + history);
 				for(String s : defSet) {
-					listModel.addElement(s);
+					listModel.addElement(s.strip());
 				}
 			}
 			else {
 				JOptionPane.showMessageDialog(resultList, "Slang is not in dictionary");
 			}
 		}
-		else if (e.getSource() == resetButton) {
+		else if (e.getSource() == clearButton) {
 			slangField.setText("");
 			definitionField.setText("");
 		}
