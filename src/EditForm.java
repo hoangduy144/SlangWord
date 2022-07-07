@@ -7,7 +7,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-///fix bug 
+
 public class EditForm extends JPanel implements ActionListener {
 	JLabel slangLabel;
 	JLabel definitionLabel;
