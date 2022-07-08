@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -26,26 +25,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class SlangForm extends JPanel implements ActionListener {
-	JLabel slangLabel;
-	JLabel definitionLabel;
-	JTextField slangField;
-	JTextField definitionField;
-	JButton addButton;
-	Dict dict;
-	JButton editButton;
-	JButton clearButton;
-	JPanel addForm;
-	JPanel searchForm;
-	JButton searchButton;
-	JButton deleteButton;
-	JList resultList;
-	JScrollPane resultPane;
-	JLabel searchSlangLabel;
-	JTextField searchSlangField;
-	DefaultListModel<String> listModel;
-	JPanel historyPanel;
-	JScrollPane historyPane;
-	JTextArea historyArea;
+	
 	public SlangForm(Dict d) {
 		dict = d;
 		
@@ -54,7 +34,7 @@ public class SlangForm extends JPanel implements ActionListener {
 		addForm = new JPanel();
 		addForm.setPreferredSize(new Dimension(400, 500));
 		addForm.setLayout(null);
-		slangLabel = new JLabel("Slang word");
+		slangLabel = new JLabel("SlangWord");
 		slangLabel.setBounds(60, 100, 80, 30);
 		definitionLabel = new JLabel("Definition");
 		definitionLabel.setBounds(60, 160, 100, 30);
@@ -62,11 +42,11 @@ public class SlangForm extends JPanel implements ActionListener {
 		slangField.setBounds(160, 100, 180, 30);
 		definitionField = new JTextField();
 		definitionField.setBounds(160, 160, 180, 30);
-		addButton = new JButton("Add");
+		addButton = new JButton("Thêm");
 		addButton.setBounds(60, 250, 80, 30);
 		addButton.addActionListener(this);
 		
-		editButton = new JButton("Edit");
+		editButton = new JButton("Sửa");
 		editButton.setBounds(160, 250, 80, 30);
 		editButton.addActionListener(this);
 		
@@ -86,12 +66,12 @@ public class SlangForm extends JPanel implements ActionListener {
 		searchForm = new JPanel();
 		searchForm.setPreferredSize(new Dimension(400, 0));
 		searchForm.setLayout(null);
-		searchSlangLabel = new JLabel("Slang word");
+		searchSlangLabel = new JLabel("SlangWord");
 		searchSlangLabel.setBounds(10, 100, 80, 30);
 		searchSlangField = new JTextField();
 		searchSlangField.setBounds(90, 100, 150, 30);
 		
-		searchButton = new JButton("Search");
+		searchButton = new JButton("Tìm Kiếm");
 		searchButton.addActionListener(this);
 		searchButton.setBounds(260, 100, 90, 30);
 		
@@ -109,7 +89,7 @@ public class SlangForm extends JPanel implements ActionListener {
 		});
 		resultPane = new JScrollPane(resultList);
 		resultPane.setBounds(90, 160, 150, 200);
-		deleteButton = new JButton("Delete");
+		deleteButton = new JButton("Xóa");
 		deleteButton.setBounds(90, 390, 150, 30);
 		deleteButton.addActionListener(this);
 		
@@ -119,16 +99,15 @@ public class SlangForm extends JPanel implements ActionListener {
 		searchForm.add(searchButton);
 		searchForm.add(deleteButton);
 		searchForm.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		add(searchForm, BorderLayout.WEST);
+		add(searchForm, BorderLayout.EAST);
 		
 		
 		historyPanel = new JPanel();
 		historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
 		historyArea = new JTextArea();
-		//historyArea.setText("Time\t        |  Search history");
-		JLabel historyLabel = new JLabel("Search history");
-		//historyPanel.add(historyArea);
-		// historyArea.setPreferredSize(new Dimension(0,200));
+                
+		JLabel historyLabel = new JLabel("Lịch sử tìm kiếm");
+                
 		historyArea.setEditable(false);
 		historyPane = new JScrollPane(historyArea);
 		historyPane.setPreferredSize(new Dimension(500, 100));
@@ -151,23 +130,27 @@ public class SlangForm extends JPanel implements ActionListener {
 			String slang = slangField.getText();
 			String definition = definitionField.getText();
 			if(dict.hasSlang(slang)) {
-				String[] options = {"Add new definition", "Overwrite"};
+				String[] options = {"Tạo mới", "Ghi đè"};
 				JOptionPane pane = new JOptionPane();
-				int choice = pane.showOptionDialog(null, "This slang has already existed", "Existed slang", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+				int choice = pane.showOptionDialog(null, "Slangword đã tồn tại", "Slangword đã tồn tại", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				if(choice == 0) {
 					dict.AddDefinition(slang, definition);
-					listModel.addElement(definition);
+					if(slang.equals(searchSlangField.getText())) {						
+						listModel.addElement(definition);
+					}
 				}
 				else {
 					dict.AddNew(slang, definition);
-					listModel.removeAllElements();
-					listModel.addElement(definition);
+					if(slang.equals(searchSlangField.getText())) {
+						listModel.removeAllElements();
+						listModel.addElement(definition);
+					}
 				}
 				
 			}
 			else {
 				dict.AddNew(slang, definition);
-				JOptionPane.showMessageDialog(null, "Added successfully");
+				JOptionPane.showMessageDialog(null, "Thêm thành công");
 			}
 		}
 		else if (e.getSource() == editButton) {
@@ -176,11 +159,11 @@ public class SlangForm extends JPanel implements ActionListener {
 				listModel.removeElement(resultList.getSelectedValue());
 			}
 			else {
-				JOptionPane.showMessageDialog(addButton, "Slang word not found");
+				JOptionPane.showMessageDialog(addButton, "Không tìm thấy slangword");
 			}
 		}
 		else if (e.getSource() == deleteButton) {
-			int choice = JOptionPane.showConfirmDialog(deleteButton, "This slang will remove from dictionary", "Delete", JOptionPane.YES_NO_OPTION);
+			int choice = JOptionPane.showConfirmDialog(deleteButton, "Slangword sẽ được xóa", "Xóa", JOptionPane.YES_NO_OPTION);
 			if(choice == 0) {
 				dict.deleteSlang(searchSlangField.getText());
 				listModel.removeAllElements();
@@ -201,7 +184,7 @@ public class SlangForm extends JPanel implements ActionListener {
 				}
 			}
 			else {
-				JOptionPane.showMessageDialog(resultList, "Slang is not in dictionary");
+				JOptionPane.showMessageDialog(resultList, "Slangword is not in dictionary");
 			}
 			dict.AddHistory(history);
 			historyArea.append("\n" + history);
@@ -211,4 +194,24 @@ public class SlangForm extends JPanel implements ActionListener {
 			definitionField.setText("");
 		}
 	}
+        JLabel slangLabel;
+	JLabel definitionLabel;
+	JTextField slangField;
+	JTextField definitionField;
+	JButton addButton;
+	Dict dict;
+	JButton editButton;
+	JButton clearButton;
+	JPanel addForm;
+	JPanel searchForm;
+	JButton searchButton;
+	JButton deleteButton;
+	JList resultList;
+	JScrollPane resultPane;
+	JLabel searchSlangLabel;
+	JTextField searchSlangField;
+	DefaultListModel<String> listModel;
+	JPanel historyPanel;
+	JScrollPane historyPane;
+	JTextArea historyArea;
 }

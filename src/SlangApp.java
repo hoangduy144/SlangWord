@@ -8,7 +8,6 @@ import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,13 +21,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 public class SlangApp implements ActionListener{
-	JFrame frame;
-	JTabbedPane tabbedPane;
-	SlangForm slangPanel;
-	JPanel findDefiPanel;
-	JMenuItem reset;
-	JMenuItem aboutMenu;
-	Dict dict;
+	
 	public SlangApp() {
 		dict = new Dict();
 		frame = new JFrame("Slang app");
@@ -42,27 +35,38 @@ public class SlangApp implements ActionListener{
 		});
 		
 		JMenuBar menuBar = new JMenuBar();
-		JMenu fileMenu = new JMenu("File");
-		aboutMenu = new JMenuItem("About");
+		JMenu fileMenu = new JMenu("Clear History");
 		
-		aboutMenu.addActionListener(this);
 		reset = new JMenuItem("Reset Dictionary");
 		reset.addActionListener(this);
 		fileMenu.add(reset);
-		fileMenu.add(aboutMenu);
 		menuBar.add(fileMenu);
 		
 		slangPanel = new SlangForm(dict);
 		tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Slang Form", slangPanel);
 		tabbedPane.addTab("Search definition", new SearchForm(dict));
-		tabbedPane.addTab("Game Form", new GameForm(dict));
-		tabbedPane.addTab("On this day", new RandomForm(dict));
+                tabbedPane.addTab("On this day", new RandomForm(dict));
+		
 		
 		frame.setJMenuBar(menuBar);
 		frame.add(tabbedPane, BorderLayout.CENTER);
 		frame.setVisible(true);
 		frame.pack();
 	}
-	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == reset) {
+			System.out.println("Here");
+			dict.reset();
+			slangPanel.clearHistory();
+		}
+		
+	}
+        JFrame frame;
+	JTabbedPane tabbedPane;
+	SlangForm slangPanel;
+	JPanel findDefiPanel;
+	JMenuItem reset;
+	Dict dict;
 }

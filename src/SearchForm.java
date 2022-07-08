@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -24,14 +23,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class SearchForm extends JPanel implements ActionListener {
-	JLabel definitionLabel;
-	JTextField definitionField;
-	JButton searchButton;
-	Dict dict;
-	JList resultList;
-	JScrollPane resultPane;
-	DefaultListModel<String> listModel;
-	JButton deleteButton;
+	
 	public SearchForm(Dict d) {
 		dict = d;
 		setPreferredSize(new Dimension(410, 500));
@@ -41,17 +33,14 @@ public class SearchForm extends JPanel implements ActionListener {
 		searchPanel.setPreferredSize(new Dimension(300, 100));
 		
 		definitionLabel = new JLabel("Definition word");
-		//definitionLabel.setBounds(10, 100, 80, 30);
 		definitionField = new JTextField();
 		definitionField.setPreferredSize(new Dimension(150, 30));
-		//definitionField.setBounds(90, 100, 150, 30);
 		
 		searchButton = new JButton("Search");
 		searchButton.addActionListener(this);
 		searchPanel.add(definitionLabel);
 		searchPanel.add(definitionField);
 		searchPanel.add(searchButton);
-		//searchButton.setBounds(260, 100, 90, 30);
 		
 		listModel = new DefaultListModel<String>();
 		
@@ -88,4 +77,13 @@ public class SearchForm extends JPanel implements ActionListener {
 		}
 		
 	}
+        JLabel definitionLabel;
+	JTextField definitionField;
+	JButton searchButton;
+	Dict dict;
+	JList resultList;
+	JScrollPane resultPane;
+	DefaultListModel<String> listModel;
+	JButton deleteButton;
+        
 }
